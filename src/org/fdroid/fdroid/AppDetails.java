@@ -566,7 +566,8 @@ public class AppDetails extends ListActivity {
             ask_alrt.setMessage(getString(R.string.installIncompatible));
             ask_alrt.setPositiveButton(getString(R.string.yes),
                     new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog,
+                        @Override
+						public void onClick(DialogInterface dialog,
                                 int whichButton) {
                             downloadHandler = new DownloadHandler(curapk,
                                     repoaddress);
@@ -574,7 +575,8 @@ public class AppDetails extends ListActivity {
                     });
             ask_alrt.setNegativeButton(getString(R.string.no),
                     new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog,
+                        @Override
+						public void onClick(DialogInterface dialog,
                                 int whichButton) {
                             return;
                         }
@@ -589,7 +591,8 @@ public class AppDetails extends ListActivity {
             builder.setMessage(R.string.SignatureMismatch).setPositiveButton(
                     getString(R.string.ok),
                     new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
+                        @Override
+						public void onClick(DialogInterface dialog, int id) {
                             dialog.cancel();
                         }
                     });
@@ -638,14 +641,16 @@ public class AppDetails extends ListActivity {
         pd.setCancelable(true);
         pd.setCanceledOnTouchOutside(false);
         pd.setOnCancelListener(new DialogInterface.OnCancelListener() {
-            public void onCancel(DialogInterface dialog) {
+            @Override
+			public void onCancel(DialogInterface dialog) {
                 downloadHandler.cancel();
             }
         });
         pd.setButton(DialogInterface.BUTTON_NEUTRAL,
                 getString(R.string.cancel),
                 new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
+                    @Override
+					public void onClick(DialogInterface dialog, int which) {
                         pd.cancel();
                     }
                 });

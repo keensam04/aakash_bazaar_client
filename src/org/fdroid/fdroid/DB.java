@@ -292,7 +292,8 @@ public class DB {
         }
 
         private static class BasicChecker extends CompatibilityChecker {
-            public boolean isCompatible(Apk apk) {
+            @Override
+			public boolean isCompatible(Apk apk) {
                 return (apk.minSdkVersion <= Utils.getApi());
             }
         }
@@ -322,7 +323,8 @@ public class DB {
                 Log.d("FDroid", logMsg.toString());
             }
 
-            public boolean isCompatible(Apk apk) {
+            @Override
+			public boolean isCompatible(Apk apk) {
                 if (apk.minSdkVersion > Utils.getApi())
                     return false;
                 if (apk.features != null) {
@@ -778,11 +780,13 @@ public class DB {
             return (instance == null ? null : instance.toString());
         }
 
-        public String toString() {
+        @Override
+		public String toString() {
             return value;
         }
 
-        public Iterator<String> iterator() {
+        @Override
+		public Iterator<String> iterator() {
             SimpleStringSplitter splitter = new SimpleStringSplitter(',');
             splitter.setString(value);
             return splitter.iterator();

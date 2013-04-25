@@ -8,7 +8,8 @@ import org.fdroid.fdroid.AppListAdapter;
 
 public class InstalledAppsFragment extends AppListFragment {
 
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    @Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return createPlainAppList();
     }
 

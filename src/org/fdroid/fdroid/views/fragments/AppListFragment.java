@@ -16,7 +16,8 @@ abstract class AppListFragment extends Fragment implements AdapterView.OnItemCli
 
     protected abstract AppListAdapter getAppListAdapter();
 
-    public void onAttach(Activity activity) {
+    @Override
+	public void onAttach(Activity activity) {
         super.onAttach(activity);
         try {
             parent = (FDroid)activity;

@@ -4,6 +4,7 @@ import android.app.ActionBar;
 import android.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.view.View;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.*;
 import org.fdroid.fdroid.FDroid;
 import org.fdroid.fdroid.R;
@@ -54,15 +55,16 @@ class OldTabManagerImpl extends TabManager {
      * and giving it a FrameLayout as a child. This will make the tabs have
      * dummy empty contents and then hook them up to our ViewPager.
      */
-    public void createTabs() {
+    @Override
+	public void createTabs() {
         tabHost = new TabHost(parent);
         tabHost.setLayoutParams(new TabHost.LayoutParams(
-                TabHost.LayoutParams.MATCH_PARENT, TabHost.LayoutParams.WRAP_CONTENT));
+                LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
 
         TabWidget tabWidget = new TabWidget(parent);
         tabWidget.setId(android.R.id.tabs);
         tabHost.setLayoutParams(new TabHost.LayoutParams(
-                TabWidget.LayoutParams.MATCH_PARENT, TabWidget.LayoutParams.WRAP_CONTENT));
+                LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
 
         FrameLayout layout = new FrameLayout(parent);
         layout.setId(android.R.id.tabcontent);
@@ -113,11 +115,13 @@ class OldTabManagerImpl extends TabManager {
     }
 
 
-    public void selectTab(int index) {
+    @Override
+	public void selectTab(int index) {
         tabHost.setCurrentTab(index);
     }
 
-    public void refreshTabLabel(int index) {
+    @Override
+	public void refreshTabLabel(int index) {
         CharSequence text = getLabel(index);
 
         // Update the count on the 'Updates' tab to show the number available.
@@ -138,7 +142,8 @@ class HoneycombTabManagerImpl extends TabManager {
         actionBar = parent.getActionBar();
     }
 
-    public void createTabs() {
+    @Override
+	public void createTabs() {
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
         for (int i = 0; i < pager.getAdapter().getCount(); i ++) {
             CharSequence label = pager.getAdapter().getPageTitle(i);
@@ -146,7 +151,8 @@ class HoneycombTabManagerImpl extends TabManager {
                 actionBar.newTab()
                     .setText(label)
                     .setTabListener(new ActionBar.TabListener() {
-                        public void onTabSelected(ActionBar.Tab tab,
+                        @Override
+						public void onTabSelected(ActionBar.Tab tab,
                                                   FragmentTransaction ft) {
                             pager.setCurrentItem(tab.getPosition());
                         }
@@ -162,11 +168,13 @@ class HoneycombTabManagerImpl extends TabManager {
         }
     }
 
-    public void selectTab(int index) {
+    @Override
+	public void selectTab(int index) {
         actionBar.setSelectedNavigationItem(index);
     }
 
-    public void refreshTabLabel(int index) {
+    @Override
+	public void refreshTabLabel(int index) {
         CharSequence text = getLabel(index);
         actionBar.getTabAt(index).setText(text);
     }

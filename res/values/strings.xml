@@ -24,15 +24,13 @@
 	<string name="last_update_check">Last repo scan: %s</string>
 	<string name="never">never</string>
 	<string name="automatic_repo_scan">Automatic repo scan</string>
-	<string name="app_name">F-Droid</string>
-	<string name="about_title">About F-Droid</string>
-	<string name="about_desc">Originally based on Aptoide.\nReleased under the
-		GNU GPLv3
-		license.</string>
-	<string name="about_site">Website: </string>
-	<string name="about_sitec">http://f-droid.org</string>
+	<string name="app_name">Aakash Bazaar</string>
+	<string name="about_title">About Aakash bazaar</string>
+	<string name="about_desc">Maintained by IIT Bombay. Based on F-Droid, which is originally based on Aptoide.\n\nReleased under the GNU GPLv3 license.</string>
+	<string name="about_site"></string>
+	<string name="about_sitec"></string>
 	<string name="about_mail">Email: </string>
-	<string name="about_mailc">admin@f-droid.org</string>
+	<string name="about_mailc">aakashtechsupport@cse.iitb.ac.in</string>
 	<string name="about_version">Version: </string>
 	<string name="about_website">Website</string>
 	<string name="about_not"> </string>

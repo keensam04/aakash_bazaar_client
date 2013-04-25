@@ -146,7 +146,8 @@ public class ManageRepo extends ListActivity {
         redraw();
     }
 
-    public boolean onCreateOptionsMenu(Menu menu) {
+    @Override
+	public boolean onCreateOptionsMenu(Menu menu) {
 
         super.onCreateOptionsMenu(menu);
         MenuItem item = menu.add(Menu.NONE, ADD_REPO, 1, R.string.menu_add_repo).setIcon(
@@ -174,7 +175,8 @@ public class ManageRepo extends ListActivity {
             alrt.setButton(DialogInterface.BUTTON_POSITIVE,
                     getString(R.string.repo_add_add),
                     new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
+                        @Override
+						public void onClick(DialogInterface dialog, int which) {
                             EditText uri = (EditText) alrt
                                     .findViewById(R.id.edit_uri);
                             String uri_str = uri.getText().toString();
@@ -192,7 +194,8 @@ public class ManageRepo extends ListActivity {
             alrt.setButton(DialogInterface.BUTTON_NEGATIVE,
                     getString(R.string.cancel),
                     new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
+                        @Override
+						public void onClick(DialogInterface dialog, int which) {
                             return;
                         }
                     });
@@ -211,7 +214,8 @@ public class ManageRepo extends ListActivity {
             builder.setIcon(android.R.drawable.ic_menu_close_clear_cancel);
             builder.setMultiChoiceItems(b, null,
                     new DialogInterface.OnMultiChoiceClickListener() {
-                        public void onClick(DialogInterface dialog,
+                        @Override
+						public void onClick(DialogInterface dialog,
                                 int whichButton, boolean isChecked) {
                             if (isChecked) {
                                 rem_lst.add(repos.get(whichButton).address);
@@ -222,7 +226,8 @@ public class ManageRepo extends ListActivity {
                     });
             builder.setPositiveButton(getString(R.string.ok),
                     new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog,
+                        @Override
+						public void onClick(DialogInterface dialog,
                                 int whichButton) {
                             try {
                                 DB db = DB.getDB();
@@ -236,7 +241,8 @@ public class ManageRepo extends ListActivity {
                     });
             builder.setNegativeButton(getString(R.string.cancel),
                     new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog,
+                        @Override
+						public void onClick(DialogInterface dialog,
                                 int whichButton) {
                             return;
                         }
