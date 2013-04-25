@@ -1,6 +1,13 @@
 Aakash Market Place
 ===================
 
+Screenshots
+
+.. image:: https://raw.github.com/androportal/aakash-fdroid-client/master/media/aakash-bazaar.png
+
+.. image:: https://raw.github.com/androportal/aakash-fdroid-client/master/media/aakash-bazaar-icon.png
+   
+
 What is this repo for ?
 -----------------------
 
