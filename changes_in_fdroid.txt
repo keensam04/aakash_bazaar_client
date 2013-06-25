@@ -63,3 +63,45 @@
 	line 106: currentCategory = categoryAll;
 
 	this will set the default view to all instead of What's New in the original FDroid.
+
+4. AvailableAppsFragment.java
+
+	line 19-50:	view.setOrientation(LinearLayout.HORIZONTAL);
+			view.setWeightSum(1f);
+
+			ListView lvCategories = new ListView(getActivity());
+
+			// Giving it an ID lets the default save/restore state
+			// functionality do its stuff.
+			lvCategories.setId(R.id.categoryListView);
+			lvCategories.setAdapter(getAppListManager().getCategoriesAdapter());
+			lvCategories.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+				public void onItemClick(AdapterView<?> parent, View view, int pos, long id) {
+					String category = parent.getItemAtPosition(pos).toString();
+					getAppListManager().setCurrentCategory(category);
+				}
+			});
+
+			LinearLayout.LayoutParams p1 = new LinearLayout.LayoutParams(
+				LinearLayout.LayoutParams.MATCH_PARENT,
+				LinearLayout.LayoutParams.WRAP_CONTENT);
+			p1.weight = 0.7f;
+
+			view.addView(lvCategories, p1);
+
+			ListView list = createAppListView();
+			view.setAppList(list);
+
+			LinearLayout.LayoutParams p2 = new LinearLayout.LayoutParams(
+				LinearLayout.LayoutParams.MATCH_PARENT,
+				LinearLayout.LayoutParams.MATCH_PARENT);
+			p2.weight = 0.3f;
+
+			view.addView(list, p2);
+
+  AppListManager.java
+
+	line 57-60:	categories = new ArrayAdapter<String>(activity,
+                	android.R.layout.simple_list_item_1, new ArrayList<String>());
+			//        categories
+			//                .setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);

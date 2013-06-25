@@ -14,6 +14,8 @@ also added image view for screenshot in appdetails.xml in layout and layout-land
 
 to change:
 
-1. change the category view from top to left side list view.
+1. change the category view from top to left side list view. (done)
 2. add star rating to the appdetail.xml and program it.
 3. the Ping.java is not working. program it accordingly
+4. change in UI
+5. screenshot, changelog

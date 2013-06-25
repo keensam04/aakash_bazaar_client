@@ -39,6 +39,7 @@ import android.preference.PreferenceManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.content.pm.PackageManager;
@@ -385,6 +386,12 @@ public class AppDetails extends ListActivity {
 
         tv = (TextView) infoView.findViewById(R.id.description);
         tv.setMovementMethod(LinkMovementMethod.getInstance());
+        
+        //Rating widget
+        RatingBar rate = (RatingBar) findViewById(R.id.rateIt);
+        rate.setNumStars(5);
+//        rate.setOnRatingBarChangeListener(listener);
+        
         // Need this to add the unimplemented support for ordered and unordered
         // lists to Html.fromHtml().
         class HtmlTagHandler implements TagHandler {

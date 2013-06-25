@@ -47,4 +47,11 @@
 	    android:layout_height="wrap_content"
 	    android:layout_width="wrap_content" />
 
+  <RatingBar
+      android:id="@+id/ratings"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_alignParentBottom="true"
+      android:layout_alignParentLeft="true" />
+
 </RelativeLayout>
