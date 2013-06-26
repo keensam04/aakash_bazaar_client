@@ -195,6 +195,7 @@ public class DB {
 
 		// List of apks.
 		public List<Apk> apks;
+		
 
 		// Get the current version - this will be one of the Apks from 'apks'.
 		// Can return null if there are no available versions.
@@ -376,7 +377,7 @@ public class DB {
 		public String lastetag; // last etag we updated from, null forces update
 	}
 
-	private final int DBVersion = 20;
+	private final static int DBVersion = 20;
 
 	private static void createAppApk(SQLiteDatabase db) {
 		db.execSQL(CREATE_TABLE_APP);
@@ -394,7 +395,7 @@ public class DB {
 		createAppApk(db);
 	}
 
-	private class DBHelper extends SQLiteOpenHelper {
+	public static class DBHelper extends SQLiteOpenHelper {
 
 		public DBHelper(Context context) {
 			super(context, DATABASE_NAME, null, DBVersion);
@@ -402,113 +403,7 @@ public class DB {
 
 		ContentValues values = new ContentValues();
 
-		public class Pong extends Activity {
-
-			@Override
-			protected void onCreate(Bundle savedInstanceState) {
-				// TODO Auto-generated method stub
-				super.onCreate(savedInstanceState);
-			}
-
-			public void ping() {
-				System.out.println("Pong is working");
-				String localserver = null;
-				InetAddress in;
-				in = null;
-				try {
-					System.out.print("address resolved!");
-					localserver = "10.105.14.135";
-					in = InetAddress.getByName(localserver);
-
-				} catch (UnknownHostException e) {
-					// TODO Auto-generated catch block
-					System.out
-							.println("something went wrong while resolving address!");
-					e.printStackTrace();
-				}
-				StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
-						.permitAll().build();
-
-				StrictMode.setThreadPolicy(policy);
-				try {
-
-					if (in.isReachable(5000)) {
-						System.out.println(" Local server is accessible! ");
-						values.put("address", mContext
-								.getString(R.string.default_repo_address));
-						values.put("pubkey", mContext
-								.getString(R.string.default_repo_pubkey));
-					} else {
-						LayoutInflater li = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-						View view = li.inflate(R.layout.ping, null);
-
-						TextView tvMainAddress = (TextView) view
-								.findViewById(R.id.tvMainRepoAddress);
-						TextView tvMainPubkey = (TextView) view
-								.findViewById(R.id.tvMainRepoPubkey);
-						tvMainAddress.setText("Repo Address: "
-								+ getString(R.string.main_repo_address));
-						if (getString(R.string.main_repo_pubkey) != null) {
-							try {
-								MessageDigest digest = MessageDigest
-										.getInstance("SHA-1");
-								digest.update(Hasher
-										.unhex(getString(R.string.main_repo_pubkey)));
-								byte[] fingerprint = digest.digest();
-								Formatter formatter = new Formatter(
-										new StringBuilder());
-								formatter.format("%02X", fingerprint[0]);
-								for (int i = 1; i < fingerprint.length; i++) {
-									formatter.format(i % 5 == 0 ? " %02X"
-											: ":%02X", fingerprint[i]);
-								}
-								tvMainPubkey.setText("Fingerprint: "
-										+ formatter.toString());
-								formatter.close();
-							} catch (Exception e) {
-								Log.w("FDroid",
-										"Unable to get certificate fingerprint.\n"
-												+ Log.getStackTraceString(e));
-							}
-						}
-
-						Builder p = new AlertDialog.Builder(this).setView(view);
-						final AlertDialog alrt = p.create();
-						alrt.setIcon(R.drawable.icon);
-						alrt.setTitle(getString(R.string.ping_title));
-						alrt.setButton(DialogInterface.BUTTON_NEUTRAL,
-								getString(R.string.ping_ok),
-								new DialogInterface.OnClickListener() {
-									@Override
-									public void onClick(DialogInterface dialog,
-											int whichButton) {
-										System.out
-												.println(" Connecting to main repo ");
-										values.put(
-												"address",
-												mContext.getString(R.string.main_repo_address));
-										values.put(
-												"pubkey",
-												mContext.getString(R.string.main_repo_pubkey));
-									}
-								});
-						alrt.setButton(DialogInterface.BUTTON_NEGATIVE,
-								getString(R.string.ping_no),
-								new DialogInterface.OnClickListener() {
-									@Override
-									public void onClick(DialogInterface dialog,
-											int whichButton) {
-									}
-								});
-						alrt.show();
-
-					}
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		}
+		
 
 		@Override
 		public void onCreate(SQLiteDatabase db) {
@@ -517,13 +412,27 @@ public class DB {
 			createAppApk(db);
 
 			db.execSQL(CREATE_TABLE_REPO);
+			ContentValues values = new ContentValues();
 			System.out.println("We come to pong");
-			Pong pong = new Pong();
-			pong.ping();
-			values.put("inuse", 1);
-			values.put("priority", 10);
-			values.put("lastetag", (String) null);
-			db.insert(TABLE_REPO, null, values);
+			//Pong pong = new Pong();
+			//pong.ping();
+			values.put("address",
+                    mContext.getString(R.string.default_repo_address));
+            values.putNull("pubkey");
+            values.put("inuse", 1);
+            values.put("priority", 10);
+            values.putNull("lastetag");
+            db.insert(TABLE_REPO, null, values);
+
+            values = new ContentValues();
+            values.put("address",
+                    mContext.getString(R.string.default_repo_address2));
+            values.put("pubkey",
+                    mContext.getString(R.string.default_repo_pubkey2));
+            values.put("inuse", 0);
+            values.put("priority", 20);
+            values.putNull("lastetag");
+            db.insert(TABLE_REPO, null, values);
 		}
 
 		@Override
@@ -571,7 +480,7 @@ public class DB {
 		return new File(getDataPath(), "icons");
 	}
 
-	private Context mContext;
+	private static Context mContext;
 	private Apk.CompatibilityChecker compatChecker = null;
 
 	// The date format used for storing dates (e.g. lastupdated, added) in the
@@ -582,7 +491,8 @@ public class DB {
 
 		mContext = ctx;
 		DBHelper h = new DBHelper(ctx);
-		db = h.getWritableDatabase();
+        db = h.getWritableDatabase();
+		
 		SharedPreferences prefs = PreferenceManager
 				.getDefaultSharedPreferences(mContext);
 		String sync_mode = prefs.getString("dbSyncMode", null);
