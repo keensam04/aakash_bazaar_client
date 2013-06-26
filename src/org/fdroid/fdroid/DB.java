@@ -377,7 +377,7 @@ public class DB {
 		public String lastetag; // last etag we updated from, null forces update
 	}
 
-	private final int DBVersion = 20;
+	private final static int DBVersion = 20;
 
 	private static void createAppApk(SQLiteDatabase db) {
 		db.execSQL(CREATE_TABLE_APP);
@@ -395,7 +395,7 @@ public class DB {
 		createAppApk(db);
 	}
 
-	private class DBHelper extends SQLiteOpenHelper {
+	public static class DBHelper extends SQLiteOpenHelper {
 
 		public DBHelper(Context context) {
 			super(context, DATABASE_NAME, null, DBVersion);
@@ -412,13 +412,27 @@ public class DB {
 			createAppApk(db);
 
 			db.execSQL(CREATE_TABLE_REPO);
+			ContentValues values = new ContentValues();
 			System.out.println("We come to pong");
 			//Pong pong = new Pong();
 			//pong.ping();
-			values.put("inuse", 1);
-			values.put("priority", 10);
-			values.put("lastetag", (String) null);
-			db.insert(TABLE_REPO, null, values);
+			values.put("address",
+                    mContext.getString(R.string.default_repo_address));
+            values.putNull("pubkey");
+            values.put("inuse", 1);
+            values.put("priority", 10);
+            values.putNull("lastetag");
+            db.insert(TABLE_REPO, null, values);
+
+            values = new ContentValues();
+            values.put("address",
+                    mContext.getString(R.string.default_repo_address2));
+            values.put("pubkey",
+                    mContext.getString(R.string.default_repo_pubkey2));
+            values.put("inuse", 0);
+            values.put("priority", 20);
+            values.putNull("lastetag");
+            db.insert(TABLE_REPO, null, values);
 		}
 
 		@Override
@@ -466,7 +480,7 @@ public class DB {
 		return new File(getDataPath(), "icons");
 	}
 
-	private Context mContext;
+	private static Context mContext;
 	private Apk.CompatibilityChecker compatChecker = null;
 
 	// The date format used for storing dates (e.g. lastupdated, added) in the

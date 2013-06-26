@@ -24,15 +24,20 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.security.MessageDigest;
 import java.util.ArrayList;
+import java.util.Formatter;
 import java.util.List;
 
 import android.app.AlarmManager;
+import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.app.IntentService;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -41,6 +46,9 @@ import android.os.ResultReceiver;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.TextView;
 
 public class UpdateService extends IntentService implements ProgressListener {
 
@@ -171,6 +179,7 @@ public class UpdateService extends IntentService implements ProgressListener {
                     } else {
                         success = false;
                         err = "Update failed for " + repo.address + " - " + err;
+                        
                         Log.d("FDroid", err);
                         if (errmsg.length() == 0)
                             errmsg = err;
@@ -303,7 +312,8 @@ public class UpdateService extends IntentService implements ProgressListener {
         }
     }
 
-    private void getIcon(DB.App app, List<DB.Repo> repos) {
+
+	private void getIcon(DB.App app, List<DB.Repo> repos) {
         try {
 
             File f = new File(DB.getIconsPath(), app.icon);

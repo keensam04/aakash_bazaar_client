@@ -46,6 +46,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class ManageRepo extends ListActivity {
 
@@ -106,6 +107,7 @@ public class ManageRepo extends ListActivity {
             }
             if (repo.pubkey != null) {
                 try {
+                	System.out.println("i am not null"+repo.pubkey+"hello");
                     MessageDigest digest = MessageDigest.getInstance("SHA-1");
                     digest.update(Hasher.unhex(repo.pubkey));
                     byte[] fingerprint = digest.digest();
@@ -121,6 +123,7 @@ public class ManageRepo extends ListActivity {
                     Log.w("FDroid", "Unable to get certificate fingerprint.\n"
                             + Log.getStackTraceString(e));
                 }
+            }else{
             }
             result.add(server_line);
         }

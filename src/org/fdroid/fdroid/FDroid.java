@@ -19,16 +19,23 @@
 
 package org.fdroid.fdroid;
 
+import java.security.MessageDigest;
+import java.util.Formatter;
+
 import android.support.v4.view.MenuItemCompat;
+
+import org.fdroid.fdroid.DB.DBHelper;
 import org.fdroid.fdroid.R;
 
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -63,6 +70,7 @@ public class FDroid extends FragmentActivity {
 
 	private ProgressDialog pd;
 
+	
 	private ViewPager viewPager;
 
 	private AppListManager manager = null;
@@ -82,6 +90,18 @@ public class FDroid extends FragmentActivity {
 		createViews();
 		getTabManager().createTabs();
 
+		//revert database to default
+		String update_local_query = "update fdroid_repo set 'inuse'=1 where id=1;";
+		String update_main_query = "update fdroid_repo set 'inuse'=0 where id=2;";
+		
+		DBHelper db = new DBHelper(FDroid.this);
+		SQLiteDatabase d = db.getWritableDatabase();
+		d.execSQL(update_local_query);
+		d.execSQL(update_main_query);
+		System.out
+				.println("reverting database to default ");
+		db.close();
+		
 		// Must be done *after* createViews, because it will involve a
 		// callback to update the tab label for the "update" tab. This
 		// will fail unless the tabs have actually been created.
@@ -301,7 +321,80 @@ public class FDroid extends FragmentActivity {
 			String message = resultData.getString(UpdateService.RESULT_MESSAGE);
 			boolean finished = false;
 			if (resultCode == UpdateService.STATUS_ERROR) {
-				Toast.makeText(FDroid.this, message, Toast.LENGTH_LONG).show();
+				
+				
+				if(message.contains("Update failed for ")){
+					LayoutInflater li = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+					View view = li.inflate(R.layout.ping, null);
+			
+					TextView tvMainAddress = (TextView) view
+							.findViewById(R.id.tvMainRepoAddress);
+					TextView tvMainPubkey = (TextView) view
+							.findViewById(R.id.tvMainRepoPubkey);
+					tvMainAddress.setText("Repo Address: "
+							+ getString(R.string.default_repo_address2));
+					if (getString(R.string.default_repo_pubkey2) != null) {
+						try {
+							MessageDigest digest = MessageDigest
+									.getInstance("SHA-1");
+							digest.update(Hasher
+									.unhex(getString(R.string.default_repo_pubkey2)));
+							byte[] fingerprint = digest.digest();
+							Formatter formatter = new Formatter(
+									new StringBuilder());
+							formatter.format("%02X", fingerprint[0]);
+							for (int i = 1; i < fingerprint.length; i++) {
+								formatter.format(i % 5 == 0 ? " %02X"
+										: ":%02X", fingerprint[i]);
+							}
+							tvMainPubkey.setText("Fingerprint: "
+									+ formatter.toString());
+							formatter.close();
+						} catch (Exception e) {
+							Log.w("FDroid",
+									"Unable to get certificate fingerprint.\n"
+											+ Log.getStackTraceString(e));
+						}
+					}
+			
+					Builder p = new AlertDialog.Builder(FDroid.this).setView(view);
+					final AlertDialog alrt = p.create();
+					alrt.setIcon(R.drawable.icon);
+					alrt.setTitle(getString(R.string.ping_title));
+					alrt.setButton(DialogInterface.BUTTON_NEUTRAL,
+							getString(R.string.ping_ok),
+							new DialogInterface.OnClickListener() {
+								@Override
+								public void onClick(DialogInterface dialog,
+										int whichButton) {
+									String update_local_query = "update fdroid_repo set 'inuse'=0 where id=1;";
+									String update_main_query = "update fdroid_repo set 'inuse'=1 where id=2;";
+									
+									DBHelper db = new DBHelper(FDroid.this);
+									SQLiteDatabase d = db.getWritableDatabase();
+									d.execSQL(update_local_query);
+									d.execSQL(update_main_query);
+									System.out
+											.println(" Connecting to main repo ");
+									db.close();
+						
+									updateRepos();
+								}
+							});
+					alrt.setButton(DialogInterface.BUTTON_NEGATIVE,
+							getString(R.string.ping_no),
+							new DialogInterface.OnClickListener() {
+								@Override
+								public void onClick(DialogInterface dialog,
+										int whichButton) {
+								}
+							});
+					alrt.show();
+					
+				}else{
+					Toast.makeText(FDroid.this, message, Toast.LENGTH_LONG).show();
+				}
+				
 				finished = true;
 			} else if (resultCode == UpdateService.STATUS_COMPLETE) {
 				repopulateViews();
