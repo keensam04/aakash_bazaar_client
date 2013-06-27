@@ -90,6 +90,9 @@ public class FDroid extends FragmentActivity {
 		createViews();
 		getTabManager().createTabs();
 
+		new DownloadFileAsync().
+			execute("http://www.it.iitb.ac.in/AakashApps/repo/screenshots/com.aakash.lab/com.aakash.lab.1.png");
+		
 		//revert database to default
 		String update_local_query = "update fdroid_repo set 'inuse'=1 where id=1;";
 		String update_main_query = "update fdroid_repo set 'inuse'=0 where id=2;";
@@ -322,8 +325,8 @@ public class FDroid extends FragmentActivity {
 			boolean finished = false;
 			if (resultCode == UpdateService.STATUS_ERROR) {
 				
-				
-				if(message.contains("Update failed for ")){
+				System.out.println("message"+message);
+				if(message.contains("Update failed for "+getString(R.string.default_repo_address))){
 					LayoutInflater li = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 					View view = li.inflate(R.layout.ping, null);
 			
