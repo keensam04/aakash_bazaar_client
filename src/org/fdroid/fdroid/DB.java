@@ -244,6 +244,7 @@ public class DB {
 			+ "minSdkVersion integer," + "permissions string,"
 			+ "features string," + "hashType string," + "added string,"
 			+ "compatible int not null," + "primary key(id,vercode));";
+	
 
 	public static class Apk {
 
@@ -367,6 +368,13 @@ public class DB {
 			+ TABLE_REPO + " (id integer primary key, address text not null, "
 			+ "inuse integer not null, " + "priority integer not null,"
 			+ "pubkey text, lastetag text);";
+	
+	
+	// custom table for screenShots
+			private static final String TABLE_SCREENSHOTS = "screenshots";
+			private static final String CREATE_TABLE_SCREENSHOTS = "create table " 
+			+ TABLE_SCREENSHOTS + " (id integer primary key, pkg_id text not null, screenshot text not null," 
+			+ " FOREIGN KEY(pkg_id) REFERENCES fdroid_apk(id));";
 
 	public static class Repo {
 		public int id;
@@ -386,6 +394,9 @@ public class DB {
 		db.execSQL(CREATE_TABLE_APK);
 		db.execSQL("create index apk_vercode on " + TABLE_APK + " (vercode);");
 		db.execSQL("create index apk_id on " + TABLE_APK + " (id);");
+		db.execSQL(CREATE_TABLE_SCREENSHOTS);
+		//db.execSQL("create index screenshots_vercode on " + SCREENSHOTS + " (vercode);");
+		//db.execSQL("create index screenshots_id on " + SCREENSHOTS + " (pkg_id);");
 	}
 
 	public static void resetTransient(SQLiteDatabase db) {
@@ -433,6 +444,9 @@ public class DB {
             values.put("priority", 20);
             values.putNull("lastetag");
             db.insert(TABLE_REPO, null, values);
+            
+            
+           
 		}
 
 		@Override

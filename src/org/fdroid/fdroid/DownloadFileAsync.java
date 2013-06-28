@@ -18,6 +18,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.widget.Toast;
@@ -31,7 +32,12 @@ public class DownloadFileAsync extends AsyncTask<String, String, String>{
 		URL url;
 		try {
 			System.out.println("get url");
+			System.out.println(Url.length);
 			url = new URL(Url[0]);
+			
+			for (int i = 0; i < Url.length; i++) {  
+			    System.out.println(Url[i]);  
+			} 
 		
         URLConnection conection = url.openConnection();
         conection.connect();
@@ -42,7 +48,10 @@ public class DownloadFileAsync extends AsyncTask<String, String, String>{
         InputStream input = new BufferedInputStream(url.openStream());
         System.out.println("get input");
         // Output stream to write file
-        OutputStream output = new FileOutputStream(Environment.getExternalStorageDirectory()+"/demo.png");
+        // Url[0] = download url
+        // Url[1] = image file name
+        // Url[2] = package name
+        OutputStream output = new FileOutputStream(Environment.getExternalStorageDirectory()+"/fdroid/"+Url[2]+"/"+Url[1]);
         System.out.println("get op");
         byte data[] = new byte[1024];
 

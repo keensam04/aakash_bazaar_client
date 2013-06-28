@@ -19,6 +19,7 @@
 
 package org.fdroid.fdroid;
 
+import java.io.File;
 import java.security.MessageDigest;
 import java.util.Formatter;
 
@@ -38,6 +39,7 @@ import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.ResultReceiver;
 import android.support.v4.app.FragmentActivity;
@@ -90,9 +92,6 @@ public class FDroid extends FragmentActivity {
 		createViews();
 		getTabManager().createTabs();
 
-		new DownloadFileAsync().
-			execute("http://www.it.iitb.ac.in/AakashApps/repo/screenshots/com.aakash.lab/com.aakash.lab.1.png");
-		
 		//revert database to default
 		String update_local_query = "update fdroid_repo set 'inuse'=1 where id=1;";
 		String update_main_query = "update fdroid_repo set 'inuse'=0 where id=2;";

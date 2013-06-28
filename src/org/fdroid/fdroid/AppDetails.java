@@ -33,6 +33,7 @@ import android.app.ProgressDialog;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
@@ -193,8 +194,11 @@ public class AppDetails extends ListActivity {
             Log.d("FDroid", "No application ID in AppDetails!?");
         } else {
             appid = i.getStringExtra("appid");
+            System.out.println("appid"+appid);
         }
 
+        downloadScreenshots(appid);
+        
         // Set up the list...
         headerView = new LinearLayout(this);
         ListView lv = (ListView) findViewById(android.R.id.list);
@@ -204,7 +208,33 @@ public class AppDetails extends ListActivity {
 
     }
 
-    private boolean pref_cacheDownloaded;
+    /*
+     * download screenshots and store in database
+     */
+    public void downloadScreenshots(String appid) {
+    	File fdroid = new File(Environment.getExternalStorageDirectory() + "/fdroid");
+		if (!fdroid.exists()) {
+			System.out.println("fdroid dir NOT exists!");
+			fdroid.mkdir();	
+			System.out.println("folder CREATED");
+			File package_dir = new File(Environment.getExternalStorageDirectory() + "/fdroid/" + appid);
+			if (!package_dir.exists()){
+				package_dir.mkdir();
+			}
+		}
+		else {
+			System.out.println("dir fdroid already exist");
+			File package_dir = new File(Environment.getExternalStorageDirectory() + "/fdroid/" + appid);
+			if (!package_dir.exists()){
+				package_dir.mkdir();
+			}
+		}
+		
+		new ParseUrl(AppDetails.this).execute(appid);
+		
+	}
+
+	private boolean pref_cacheDownloaded;
     private boolean pref_expert;
     private boolean resetRequired;
 
