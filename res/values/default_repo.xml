@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
+	<string name = "download_screenshot_url"> http://www.it.iitb.ac.in/AakashApps/repo/screenshots/ </string>
     <string name="default_repo_address" formatted="false">http://local-bazaar.com/AakashApps/repo</string>
     <string name="default_repo_address2" formatted="false">http://www.it.iitb.ac.in/AakashApps/repo/</string>
 	<string name ="default_repo_pubkey"></string>

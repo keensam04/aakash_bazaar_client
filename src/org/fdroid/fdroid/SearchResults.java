@@ -18,6 +18,7 @@
 
 package org.fdroid.fdroid;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,6 +26,7 @@ import android.app.ListActivity;
 import android.app.SearchManager;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -128,13 +130,42 @@ public class SearchResults extends ListActivity {
         final DB.App app;
         app = (DB.App) applist.getItem(position);
 
+        downloadScreenshots(app.id);
+        
+        
         Intent intent = new Intent(this, AppDetails.class);
         intent.putExtra("appid", app.id);
         startActivityForResult(intent, REQUEST_APPDETAILS);
         super.onListItemClick(l, v, position, id);
     }
 
-    @Override
+    /*
+     * download screenshots and store in /sdcard/fdroid and write database
+     */
+    public void downloadScreenshots(String appid) {
+    	File fdroid = new File(Environment.getExternalStorageDirectory() + "/fdroid");
+		if (!fdroid.exists()) {
+			System.out.println("fdroid dir NOT exists!");
+			fdroid.mkdir();	
+			System.out.println("folder CREATED");
+			File package_dir = new File(Environment.getExternalStorageDirectory() + "/fdroid/" + appid);
+			if (!package_dir.exists()){
+				package_dir.mkdir();
+			}
+		}
+		else {
+			System.out.println("dir fdroid already exist");
+			File package_dir = new File(Environment.getExternalStorageDirectory() + "/fdroid/" + appid);
+			if (!package_dir.exists()){
+				package_dir.mkdir();
+			}
+		}
+		
+		new ParseUrl(SearchResults.this).execute(appid.toString());
+    }
+		
+
+	@Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
         super.onCreateOptionsMenu(menu);

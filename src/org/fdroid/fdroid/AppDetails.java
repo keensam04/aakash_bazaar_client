@@ -24,12 +24,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.support.v4.view.MenuItemCompat;
+
+import org.fdroid.fdroid.DB.DBHelper;
 import org.fdroid.fdroid.compat.MenuManager;
 import org.xml.sax.XMLReader;
 
+import android.app.ActionBar.LayoutParams;
 import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -41,6 +46,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RatingBar;
+import android.widget.Space;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.content.pm.PackageManager;
@@ -51,6 +57,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.text.Editable;
 import android.text.Html;
 import android.text.Html.TagHandler;
@@ -196,8 +204,6 @@ public class AppDetails extends ListActivity {
             appid = i.getStringExtra("appid");
             System.out.println("appid"+appid);
         }
-
-        downloadScreenshots(appid);
         
         // Set up the list...
         headerView = new LinearLayout(this);
@@ -207,32 +213,6 @@ public class AppDetails extends ListActivity {
         setListAdapter(la);
 
     }
-
-    /*
-     * download screenshots and store in database
-     */
-    public void downloadScreenshots(String appid) {
-    	File fdroid = new File(Environment.getExternalStorageDirectory() + "/fdroid");
-		if (!fdroid.exists()) {
-			System.out.println("fdroid dir NOT exists!");
-			fdroid.mkdir();	
-			System.out.println("folder CREATED");
-			File package_dir = new File(Environment.getExternalStorageDirectory() + "/fdroid/" + appid);
-			if (!package_dir.exists()){
-				package_dir.mkdir();
-			}
-		}
-		else {
-			System.out.println("dir fdroid already exist");
-			File package_dir = new File(Environment.getExternalStorageDirectory() + "/fdroid/" + appid);
-			if (!package_dir.exists()){
-				package_dir.mkdir();
-			}
-		}
-		
-		new ParseUrl(AppDetails.this).execute(appid);
-		
-	}
 
 	private boolean pref_cacheDownloaded;
     private boolean pref_expert;
@@ -414,6 +394,40 @@ public class AppDetails extends ListActivity {
             tv.setText(String.format(getString(R.string.details_installed),
                     app.installedVersion));
 
+        //********************************************************
+        
+      try {
+        // fetch screenshots from /sdcard
+        ArrayList<String> image_array = fetch_screenshots();
+        LinearLayout screenshot_parent = (LinearLayout) infoView.findViewById(R.id.parentLinear);
+    	if(image_array.size() != 0){
+			// fetch screenshots from /sdcard
+	    	File image_path = new File(Environment.getExternalStorageDirectory()+"/fdroid/"+appid);
+	    	if (image_path.exists() && image_path.getUsableSpace() != 0) {
+	    		//Toast.makeText(AppDetails.this, "fetching new images", Toast.LENGTH_SHORT).show();
+	    		for (int i = 0; i < image_array.size(); i++) {
+	    			//Toast.makeText(this, "image found"+image_array.get(i).toString(), Toast.LENGTH_SHORT).show();
+	    			System.out.println("image name"+image_array.get(i).toString());
+	    			//add screenshots to layout
+	    	        
+	    	        ImageView screenshot = new ImageView(AppDetails.this);
+	    	        Bitmap bm = BitmapFactory.decodeFile(image_path+"/"+image_array.get(i).toString());
+	    	        //screenshot.setBackgroundResource(Drawable.createFromPath(image_path+"/"+image_array.get(i).toString()));
+	    	        screenshot.setImageBitmap(bm);
+	    	        screenshot_parent.addView(screenshot,250,LayoutParams.MATCH_PARENT);
+	    	        
+	    	        Space space = new Space(AppDetails.this);
+	    			screenshot_parent.addView(space,5,LayoutParams.MATCH_PARENT);
+	    		}
+	    		
+	    	}
+    	}
+    	
+    } catch (Exception e) {
+    	Toast.makeText(AppDetails.this, "error"+e.getMessage().toString(), Toast.LENGTH_SHORT).show();
+	}
+        
+        //********************************************************
         tv = (TextView) infoView.findViewById(R.id.description);
         tv.setMovementMethod(LinkMovementMethod.getInstance());
         
@@ -473,6 +487,45 @@ public class AppDetails extends ListActivity {
 
     }
 
+    
+    public ArrayList<String> fetch_screenshots() {
+    	DBHelper d = new DBHelper(this);
+		SQLiteDatabase db = d.getWritableDatabase();
+		
+		ArrayList<String> image_array = new ArrayList<String>();
+		String get_image_name = "select screenshot from screenshots where pkg_id='com.aakash.lab';";
+		//System.out.println(get_image_name);
+		
+		Cursor cursor = db.rawQuery(get_image_name, null);
+		System.out.println("OUTSIDE IF STATEMENT");
+		if (cursor.moveToFirst()) {
+			System.out.println("INSIDE IF STATEMENT");
+			do {
+				image_array.add(cursor.getString(0));
+				//screenshot_list[cursor.getPosition()] = cursor.getString(0); // column 'screenshot'
+				System.out.println("CURSOR_POSITION : "+cursor.getPosition());
+			} while (cursor.moveToNext());				
+			
+		}
+		db.close();
+		
+		System.out.println("SCREENSHOT_LIST is: "+image_array.size());
+//		
+//		for (int i = 0; i < image_array.size(); i++) {
+//			Toast.makeText(this, "image found"+image_array.get(i).toString(), Toast.LENGTH_SHORT).show();
+//		}
+//    	
+//    	
+//		// fetch screenshots from /sdcard
+//    	File image_path = new File(Environment.getExternalStorageDirectory()+"/fdroid/"+appid);
+//    	if (image_path.exists() && image_path.getUsableSpace() != 0) {
+//    		
+//    		Toast.makeText(AppDetails.this, "fetching new images", Toast.LENGTH_SHORT).show();
+//    	}
+		return image_array;
+		
+	}
+    
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
         curapk = app.apks.get(position - l.getHeaderViewsCount());

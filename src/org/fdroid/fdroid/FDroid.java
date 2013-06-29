@@ -21,6 +21,9 @@ package org.fdroid.fdroid;
 
 import java.io.File;
 import java.security.MessageDigest;
+import java.sql.Date;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Formatter;
 
 import android.support.v4.view.MenuItemCompat;
@@ -44,6 +47,8 @@ import android.os.Handler;
 import android.os.ResultReceiver;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
+import android.text.format.DateFormat;
+import android.text.method.DateTimeKeyListener;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -92,6 +97,12 @@ public class FDroid extends FragmentActivity {
 		createViews();
 		getTabManager().createTabs();
 
+		Calendar c = Calendar.getInstance();
+		
+		
+		// logcat query
+		System.out.println("=================="+c.DATE+":"+c.HOUR_OF_DAY+":"+c.MINUTE+":"+c.getTimeInMillis()+"========================");
+		
 		//revert database to default
 		String update_local_query = "update fdroid_repo set 'inuse'=1 where id=1;";
 		String update_main_query = "update fdroid_repo set 'inuse'=0 where id=2;";
