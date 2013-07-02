@@ -5,7 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,8 +20,13 @@ public class AppListAdapter extends BaseAdapter {
     private List<DB.App> items = new ArrayList<DB.App>();
     private Context mContext;
 
+    private boolean pref_compact;
+
     public AppListAdapter(Context context) {
         mContext = context;
+        SharedPreferences prefs = PreferenceManager
+                .getDefaultSharedPreferences(mContext);
+        pref_compact = prefs.getBoolean("compactlayout", false);
     }
 
     public void addItem(DB.App app) {
@@ -72,14 +79,11 @@ public class AppListAdapter extends BaseAdapter {
             vs = String.format(vs, numav);
         }
 
-        TextView status = (TextView) v.findViewById(R.id.status);
-        status.setText(vs);
-
-        TextView license = (TextView) v.findViewById(R.id.license);
-        license.setText(app.license);
-
         TextView summary = (TextView) v.findViewById(R.id.summary);
-        summary.setText(app.summary);
+        if (pref_compact)
+            summary.setVisibility(View.GONE);
+        else
+            summary.setText(app.summary);
 
         ImageView icon = (ImageView) v.findViewById(R.id.icon);
         File icn = new File(DB.getIconsPath(), app.icon);
@@ -91,7 +95,7 @@ public class AppListAdapter extends BaseAdapter {
         }
 
         // Disable it all if it isn't compatible...
-        View[] views = { v, status, summary, license, name };
+        View[] views = { v, summary, name };
         for (View view : views) {
             view.setEnabled(app.compatible);
         }

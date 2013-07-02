@@ -61,11 +61,13 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
+import android.widget.ScrollView;
 import android.widget.Space;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -86,6 +88,7 @@ import android.text.Html.TagHandler;
 import android.text.format.DateFormat;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -317,6 +320,11 @@ public class AppDetails extends ListActivity {
 				new ParseUrl().execute(appid.toString());
 			}else{
 				System.out.println("INTERNET OFF");
+				progressbar_screenshot = (ProgressBar) screenshot_parent.findViewById(R.id.progressBar_screenshot);
+				progressbar_screenshot.setVisibility(View.GONE);
+				TextView tv = new TextView(AppDetails.this);
+				tv.setText("No previews available");
+				screenshot_parent.addView(tv);
 			}
 		}
     }
@@ -400,8 +408,20 @@ public class AppDetails extends ListActivity {
 					execute(URL_REPO+"/screenshots/"+PKG_NAME+"/"+screenshots[i],screenshots[i],PKG_NAME);
 				}
 				
+			}else{
+				System.out.println("NO SCREENSHOTS AVAILABLE");
+				add_no_preview_textview();
 			}
 			super.onPostExecute(result);
+		}
+
+		public void add_no_preview_textview() {
+			progressbar_screenshot = (ProgressBar) screenshot_parent.findViewById(R.id.progressBar_screenshot);
+			progressbar_screenshot.setVisibility(View.GONE);
+			TextView tv = new TextView(AppDetails.this);
+			tv.setGravity(Gravity.FILL_VERTICAL);
+			tv.setText("No previews available");
+			screenshot_parent.addView(tv);
 		}
 
 		
@@ -501,7 +521,7 @@ public class AppDetails extends ListActivity {
 		        Bitmap bm = BitmapFactory.decodeFile(Environment.getExternalStorageDirectory()+"/fdroid/"+appid+"/"+IMAGE_NAME);
 		        //screenshot.setBackgroundResource(Drawable.createFromPath(image_path+"/"+image_array.get(i).toString()));
 		        screenshot.setImageBitmap(bm);
-		        screenshot_parent.addView(screenshot,250,LayoutParams.MATCH_PARENT);
+		        screenshot_parent.addView(screenshot,250,200);
 		        
 		        Space space = new Space(AppDetails.this);
 				screenshot_parent.addView(space,5,LayoutParams.MATCH_PARENT);
@@ -530,7 +550,7 @@ public class AppDetails extends ListActivity {
     	        Bitmap bm = BitmapFactory.decodeFile(image_path+"/"+image_array.get(i).toString());
     	        //screenshot.setBackgroundResource(Drawable.createFromPath(image_path+"/"+image_array.get(i).toString()));
     	        screenshot.setImageBitmap(bm);
-    	        screenshot_parent.addView(screenshot,250,LayoutParams.MATCH_PARENT);
+    	        screenshot_parent.addView(screenshot,250,200);
     	        
     	        Space space = new Space(AppDetails.this);
     			screenshot_parent.addView(space,5,LayoutParams.MATCH_PARENT);
@@ -658,9 +678,10 @@ public class AppDetails extends ListActivity {
         // landscape mode. In portrait mode, we put it in the listview's
         // header..
         infoView = View.inflate(this, R.layout.appinfo, null);
-        LinearLayout landparent = (LinearLayout) findViewById(R.id.landleft);
+        ScrollView landparent = (ScrollView) findViewById(R.id.landleft);
         headerView.removeAllViews();
         if (landparent != null) {
+        	landparent.removeAllViews();
             landparent.addView(infoView);
             Log.d("FDroid", "Setting landparent infoview");
         } else {
@@ -680,8 +701,8 @@ public class AppDetails extends ListActivity {
         // Set the title and other header details...
         TextView tv = (TextView) findViewById(R.id.title);
         tv.setText(app.name);
-        tv = (TextView) findViewById(R.id.license);
-        tv.setText(app.license);
+//        tv = (TextView) findViewById(R.id.license);
+//        tv.setText(app.license);
         tv = (TextView) findViewById(R.id.status);
         if (app.installedVersion == null)
             tv.setText(getString(R.string.details_notinstalled));
@@ -692,6 +713,36 @@ public class AppDetails extends ListActivity {
         //********************************************************
         
         screenshot_parent = (LinearLayout) infoView.findViewById(R.id.parentLinear);
+        
+        final Button installOrLaunch = (Button) findViewById(R.id.bAppDetailInstall);
+		Button uninstall = (Button) findViewById(R.id.bAppDetailUninstall);
+		if (app.installedVersion == null)
+			installOrLaunch.setText(" Install ");
+		else {
+			installOrLaunch.setText(" Launch  ");
+			uninstall.setVisibility(View.VISIBLE);
+		}
+        
+        installOrLaunch.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				if (installOrLaunch.getText().toString() == "Install") {
+					curapk = app.getCurrentVersion();
+					if (curapk != null)
+						install();
+				} else
+					launchApk(app.id);
+
+			}
+		});
+		uninstall.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				removeApk(app.id);
+			}
+		});
         
         //********************************************************
         tv = (TextView) infoView.findViewById(R.id.description);
