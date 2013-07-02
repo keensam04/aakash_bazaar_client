@@ -323,7 +323,8 @@ public class AppDetails extends ListActivity {
 				progressbar_screenshot = (ProgressBar) screenshot_parent.findViewById(R.id.progressBar_screenshot);
 				progressbar_screenshot.setVisibility(View.GONE);
 				TextView tv = new TextView(AppDetails.this);
-				tv.setText("No previews available");
+				tv.setText("No screenshots available");
+				tv.setPadding(0, 20, 0, 20);
 				screenshot_parent.addView(tv);
 			}
 		}
@@ -420,7 +421,8 @@ public class AppDetails extends ListActivity {
 			progressbar_screenshot.setVisibility(View.GONE);
 			TextView tv = new TextView(AppDetails.this);
 			tv.setGravity(Gravity.FILL_VERTICAL);
-			tv.setText("No previews available");
+			tv.setText("No screenshots available");
+			tv.setPadding(0, 20, 0, 20);
 			screenshot_parent.addView(tv);
 		}
 

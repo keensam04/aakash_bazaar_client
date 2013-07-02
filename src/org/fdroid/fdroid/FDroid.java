@@ -19,6 +19,8 @@
 
 package org.fdroid.fdroid;
 
+import org.fdroid.fdroid.ourViewClient;
+
 import java.io.File;
 import java.security.MessageDigest;
 import java.sql.Date;
@@ -54,8 +56,11 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.ValueCallback;
+import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.widget.*;
+
 import org.fdroid.fdroid.compat.TabManager;
 import org.fdroid.fdroid.views.AppListFragmentPageAdapter;
 
@@ -76,6 +81,8 @@ public class FDroid extends FragmentActivity {
 	private static final int SEARCH = Menu.FIRST + 5;
 
 	private ProgressDialog pd;
+	private ValueCallback<Uri> mUploadMessage;
+	private final static int FILECHOOSER_RESULTCODE = 1;
 
 	
 	private ViewPager viewPager;
@@ -183,12 +190,54 @@ public class FDroid extends FragmentActivity {
 
 			WebView uploadApk = (WebView) viewapk
 					.findViewById(R.id.wvUploadApk);
+			EditText keyboardHack = new EditText(this);
 
 			uploadApk.getSettings().setJavaScriptEnabled(true);
 			uploadApk.getSettings().setLoadWithOverviewMode(true);
 			uploadApk.getSettings().setUseWideViewPort(true);
+			uploadApk.getSettings().setAllowFileAccess(true);
 
 			uploadApk.setWebViewClient(new ourViewClient());
+			uploadApk.setWebChromeClient(new WebChromeClient() {
+				// The undocumented magic method override
+				// Eclipse will swear at you if you try to put @Override here
+				// For Android 3.0+
+				// public void openFileChooser(ValueCallback<Uri> uploadMsg) {
+
+				// mUploadMessage = uploadMsg;
+				// Intent i = new Intent(Intent.ACTION_GET_CONTENT);
+				// i.addCategory(Intent.CATEGORY_OPENABLE);
+				// i.setType("image/*");
+				// FDroid.this.startActivityForResult(
+				// Intent.createChooser(i, "File Chooser"),
+				// FILECHOOSER_RESULTCODE);
+				// }
+
+				// For Android 3.0+
+				public void openFileChooser(ValueCallback uploadMsg,
+						String acceptType) {
+					mUploadMessage = uploadMsg;
+					Intent i = new Intent(Intent.ACTION_GET_CONTENT);
+					i.addCategory(Intent.CATEGORY_OPENABLE);
+					i.setType("*/*");
+					FDroid.this.startActivityForResult(
+							Intent.createChooser(i, "File Browser"),
+							FILECHOOSER_RESULTCODE);
+				}
+
+				// For Android 4.1
+				// public void openFileChooser(ValueCallback<Uri> uploadMsg,
+				// String acceptType, String capture) {
+				// mUploadMessage = uploadMsg;
+				// Intent i = new Intent(Intent.ACTION_GET_CONTENT);
+				// i.addCategory(Intent.CATEGORY_OPENABLE);
+				// i.setType("image/*");
+				// FDroid.this.startActivityForResult(
+				// Intent.createChooser(i, "File Chooser"),
+				// FDroid.FILECHOOSER_RESULTCODE);
+				// }
+
+			});
 
 			/*
 			 * address should be that of the login page for filling up the
@@ -196,10 +245,11 @@ public class FDroid extends FragmentActivity {
 			 * akash bazaar repo
 			 */
 			try {
-				uploadApk.loadUrl("http://www.dropbox.com");
+				uploadApk.loadUrl(getString(R.string.upload_apk_page));
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+			keyboardHack.setVisibility(View.GONE);
 
 			Builder p1 = new AlertDialog.Builder(this).setView(viewapk);
 			final AlertDialog alrts = p1.create();

@@ -120,6 +120,7 @@
     <string name="category_all">All</string>
     <string name="category_whatsnew">What\'s New</string>
     <string name="category_recentlyupdated">Recently Updated</string>
+    <string name="upload_apk_page">http://10.129.50.7:8000/aakash_bazaar/default</string>
 
     <!--
     status_download takes four parameters:
