@@ -48,7 +48,8 @@
         <activity android:name="Settings" />
         <activity
             android:name="AppDetails"
-            android:exported="true" >
+            android:exported="true"
+            android:screenOrientation="landscape" >
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
 

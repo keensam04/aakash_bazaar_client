@@ -31,9 +31,16 @@
            android:id="@+id/parentLinear"
            android:layout_width="wrap_content"
            android:layout_height="match_parent"
-           android:orientation="horizontal">
-           
-           
+           android:orientation="horizontal"
+           android:layout_gravity="center">
+
+           <ProgressBar
+               android:id="@+id/progressBar_screenshot"
+               style="?android:attr/progressBarStyleLarge"
+     	       android:layout_width="0dp"
+               android:layout_height="wrap_content"
+               android:layout_weight="1"
+               android:layout_gravity="center|center_horizontal" />
        </LinearLayout>
        
    </HorizontalScrollView>

@@ -28,6 +28,8 @@ import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.Formatter;
 import java.util.List;
+import org.apache.commons.io.FileUtils;
+import org.fdroid.fdroid.DB.DBHelper;
 
 import android.app.AlarmManager;
 import android.app.AlertDialog;
@@ -41,7 +43,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.ResultReceiver;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
@@ -56,7 +60,7 @@ public class UpdateService extends IntentService implements ProgressListener {
     public static final int STATUS_COMPLETE    = 0;
     public static final int STATUS_ERROR       = 1;
     public static final int STATUS_INFO        = 2;
-
+    public static String repoAddress = null;
     private ResultReceiver receiver = null;
 
     public UpdateService() {
@@ -192,7 +196,24 @@ public class UpdateService extends IntentService implements ProgressListener {
             if (!changes && success) {
                     Log.d("FDroid", "Not checking app details or compatibility, because all repos were up to date.");
             } else if (changes && success) {
-
+            	//************************************************
+            	//drop and recreate table screenshot table
+            	DBHelper dh = new DBHelper(UpdateService.this);
+    			SQLiteDatabase d = dh.getWritableDatabase();
+            	d.execSQL("drop table screenshots");
+            	// custom table for screenShots
+    			final String TABLE_SCREENSHOTS = "screenshots";
+    			final String CREATE_TABLE_SCREENSHOTS = "create table " 
+    			+ TABLE_SCREENSHOTS + " (id integer primary key, pkg_id text not null, screenshot text not null," 
+    			+ " FOREIGN KEY(pkg_id) REFERENCES fdroid_apk(id));";
+    			d.execSQL(CREATE_TABLE_SCREENSHOTS);
+    			d.close();
+    			
+    			//delete fdroid folder from sdcard
+    			FileUtils.deleteDirectory(new File(Environment.getExternalStorageDirectory()+"/fdroid/"));
+    			//************************************************
+    			
+    			//set apk list
                 sendStatus(STATUS_INFO, getString(R.string.status_checking_compatibility));
                 List<DB.App> acceptedapps = new ArrayList<DB.App>();
                 List<DB.App> prevapps = ((FDroidApp) getApplication()).getApps();
@@ -356,13 +377,13 @@ public class UpdateService extends IntentService implements ProgressListener {
 
         String message = "";
         if (event.type == RepoXMLHandler.PROGRESS_TYPE_DOWNLOAD) {
-            String repoAddress    = event.data.getString(RepoXMLHandler.PROGRESS_DATA_REPO);
+            repoAddress    = event.data.getString(RepoXMLHandler.PROGRESS_DATA_REPO);
             String downloadedSize = Utils.getFriendlySize( event.progress );
             String totalSize      = Utils.getFriendlySize( event.total );
             int percent           = (int)((double)event.progress/event.total * 100);
             message = getString(R.string.status_download, repoAddress, downloadedSize, totalSize, percent);
         } else if (event.type == RepoXMLHandler.PROGRESS_TYPE_PROCESS_XML) {
-            String repoAddress    = event.data.getString(RepoXMLHandler.PROGRESS_DATA_REPO);
+            repoAddress    = event.data.getString(RepoXMLHandler.PROGRESS_DATA_REPO);
             message = getString(R.string.status_processing_xml, repoAddress, event.progress, event.total);
         }
 
