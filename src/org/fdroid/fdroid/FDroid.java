@@ -1,38 +1,35 @@
 /*
- * Copyright (C) 2010-12  Ciaran Gultnieks, ciaran@ciarang.com
- * Copyright (C) 2009  Roberto Jacinto, roberto.jacinto@caixamagica.pt
+ * Copyright (C) 2010-12 Ciaran Gultnieks, ciaran@ciarang.com
+ * Copyright (C) 2009 Roberto Jacinto, roberto.jacinto@caixamagica.pt
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 3
- * of the License, or (at your option) any later version.
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation; either version 3 of the
+ * License, or (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
  * 
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+ * 02110-1301, USA.
  */
 
 package org.fdroid.fdroid;
 
 import org.fdroid.fdroid.ourViewClient;
-
 import java.io.File;
 import java.security.MessageDigest;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Formatter;
-
 import android.support.v4.view.MenuItemCompat;
-
 import org.fdroid.fdroid.DB.DBHelper;
 import org.fdroid.fdroid.R;
-
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.app.ProgressDialog;
@@ -60,7 +57,6 @@ import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.widget.*;
-
 import org.fdroid.fdroid.compat.TabManager;
 import org.fdroid.fdroid.views.AppListFragmentPageAdapter;
 
@@ -84,7 +80,7 @@ public class FDroid extends FragmentActivity {
 	private ValueCallback<Uri> mUploadMessage;
 	private final static int FILECHOOSER_RESULTCODE = 1;
 
-	
+
 	private ViewPager viewPager;
 
 	private AppListManager manager = null;
@@ -105,23 +101,23 @@ public class FDroid extends FragmentActivity {
 		getTabManager().createTabs();
 
 		Calendar c = Calendar.getInstance();
-		
-		
+
+
 		// logcat query
-		System.out.println("=================="+c.DATE+":"+c.HOUR_OF_DAY+":"+c.MINUTE+":"+c.getTimeInMillis()+"========================");
-		
+		// System.out.println("=================="+c.DATE+":"+c.HOUR_OF_DAY+":"+c.MINUTE+":"+c.getTimeInMillis()+"========================");
+
 		//revert database to default
 		String update_local_query = "update fdroid_repo set 'inuse'=1 where id=1;";
 		String update_main_query = "update fdroid_repo set 'inuse'=0 where id=2;";
-		
+
 		DBHelper db = new DBHelper(FDroid.this);
 		SQLiteDatabase d = db.getWritableDatabase();
 		d.execSQL(update_local_query);
 		d.execSQL(update_main_query);
 		System.out
-				.println("reverting database to default ");
+		.println("reverting database to default ");
 		db.close();
-		
+
 		// Must be done *after* createViews, because it will involve a
 		// callback to update the tab label for the "update" tab. This
 		// will fail unless the tabs have actually been created.
@@ -240,9 +236,7 @@ public class FDroid extends FragmentActivity {
 			});
 
 			/*
-			 * address should be that of the login page for filling up the
-			 * credentials of the developer who wants to host his apk on the
-			 * akash bazaar repo
+			 * Upload APK URL(will be aakashlabs)
 			 */
 			try {
 				uploadApk.loadUrl(getString(R.string.upload_apk_page));
@@ -288,22 +282,21 @@ public class FDroid extends FragmentActivity {
 			alrt.setButton(DialogInterface.BUTTON_NEUTRAL,
 					getString(R.string.about_website),
 					new DialogInterface.OnClickListener() {
-						@Override
-						public void onClick(DialogInterface dialog,
-								int whichButton) {
-							Uri uri = Uri
-									.parse("http://www.it.iitb.ac.in/aakash2/");
-							startActivity(new Intent(Intent.ACTION_VIEW, uri));
-						}
-					});
+				@Override
+				public void onClick(DialogInterface dialog,
+						int whichButton) {
+					Uri uri = Uri.parse("http://www.it.iitb.ac.in/aakash2/");
+					startActivity(new Intent(Intent.ACTION_VIEW, uri));
+				}
+			});
 			alrt.setButton(DialogInterface.BUTTON_NEGATIVE,
 					getString(R.string.ok),
 					new DialogInterface.OnClickListener() {
-						@Override
-						public void onClick(DialogInterface dialog,
-								int whichButton) {
-						}
-					});
+				@Override
+				public void onClick(DialogInterface dialog,
+						int whichButton) {
+				}
+			});
 			alrt.show();
 			return true;
 		}
@@ -324,20 +317,20 @@ public class FDroid extends FragmentActivity {
 				ask_alrt.setMessage(getString(R.string.repo_alrt));
 				ask_alrt.setPositiveButton(getString(R.string.yes),
 						new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog,
-									int whichButton) {
-								updateRepos();
-							}
-						});
+					@Override
+					public void onClick(DialogInterface dialog,
+							int whichButton) {
+						updateRepos();
+					}
+				});
 				ask_alrt.setNegativeButton(getString(R.string.no),
 						new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog,
-									int whichButton) {
-								return;
-							}
-						});
+					@Override
+					public void onClick(DialogInterface dialog,
+							int whichButton) {
+						return;
+					}
+				});
 				AlertDialog alert = ask_alrt.create();
 				alert.show();
 			}
@@ -364,12 +357,12 @@ public class FDroid extends FragmentActivity {
 				this);
 		viewPager.setAdapter(viewPageAdapter);
 		viewPager
-				.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
-					@Override
-					public void onPageSelected(int position) {
-						getTabManager().selectTab(position);
-					}
-				});
+		.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+			@Override
+			public void onPageSelected(int position) {
+				getTabManager().selectTab(position);
+			}
+		});
 	}
 
 	// For receiving results from the UpdateService when we've told it to
@@ -384,12 +377,12 @@ public class FDroid extends FragmentActivity {
 			String message = resultData.getString(UpdateService.RESULT_MESSAGE);
 			boolean finished = false;
 			if (resultCode == UpdateService.STATUS_ERROR) {
-				
+
 				System.out.println("message"+message);
 				if(message.contains("Update failed for "+getString(R.string.default_repo_address))){
 					LayoutInflater li = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 					View view = li.inflate(R.layout.ping, null);
-			
+
 					TextView tvMainAddress = (TextView) view
 							.findViewById(R.id.tvMainRepoAddress);
 					TextView tvMainPubkey = (TextView) view
@@ -419,7 +412,7 @@ public class FDroid extends FragmentActivity {
 											+ Log.getStackTraceString(e));
 						}
 					}
-			
+
 					Builder p = new AlertDialog.Builder(FDroid.this).setView(view);
 					final AlertDialog alrt = p.create();
 					alrt.setIcon(R.drawable.icon);
@@ -427,37 +420,37 @@ public class FDroid extends FragmentActivity {
 					alrt.setButton(DialogInterface.BUTTON_NEUTRAL,
 							getString(R.string.ping_ok),
 							new DialogInterface.OnClickListener() {
-								@Override
-								public void onClick(DialogInterface dialog,
-										int whichButton) {
-									String update_local_query = "update fdroid_repo set 'inuse'=0 where id=1;";
-									String update_main_query = "update fdroid_repo set 'inuse'=1 where id=2;";
-									
-									DBHelper db = new DBHelper(FDroid.this);
-									SQLiteDatabase d = db.getWritableDatabase();
-									d.execSQL(update_local_query);
-									d.execSQL(update_main_query);
-									System.out
-											.println(" Connecting to main repo ");
-									db.close();
-						
-									updateRepos();
-								}
-							});
+						@Override
+						public void onClick(DialogInterface dialog,
+								int whichButton) {
+							String update_local_query = "update fdroid_repo set 'inuse'=0 where id=1;";
+							String update_main_query = "update fdroid_repo set 'inuse'=1 where id=2;";
+
+							DBHelper db = new DBHelper(FDroid.this);
+							SQLiteDatabase d = db.getWritableDatabase();
+							d.execSQL(update_local_query);
+							d.execSQL(update_main_query);
+							System.out
+							.println(" Connecting to main repo ");
+							db.close();
+
+							updateRepos();
+						}
+					});
 					alrt.setButton(DialogInterface.BUTTON_NEGATIVE,
 							getString(R.string.ping_no),
 							new DialogInterface.OnClickListener() {
-								@Override
-								public void onClick(DialogInterface dialog,
-										int whichButton) {
-								}
-							});
+						@Override
+						public void onClick(DialogInterface dialog,
+								int whichButton) {
+						}
+					});
 					alrt.show();
-					
+
 				}else{
 					Toast.makeText(FDroid.this, message, Toast.LENGTH_LONG).show();
 				}
-				
+
 				finished = true;
 			} else if (resultCode == UpdateService.STATUS_COMPLETE) {
 				repopulateViews();
@@ -487,7 +480,7 @@ public class FDroid extends FragmentActivity {
 			Log.d("FDroid",
 					"Empty app list, and we haven't done an update yet. Forcing repo update.");
 			getPreferences(MODE_PRIVATE).edit()
-					.putBoolean(TRIED_EMPTY_UPDATE, true).commit();
+			.putBoolean(TRIED_EMPTY_UPDATE, true).commit();
 			updateRepos();
 			return true;
 		} else {

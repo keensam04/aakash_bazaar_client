@@ -17,90 +17,96 @@ import android.widget.TextView;
 
 public class AppListAdapter extends BaseAdapter {
 
-    private List<DB.App> items = new ArrayList<DB.App>();
-    private Context mContext;
+	private List<DB.App> items = new ArrayList<DB.App>();
+	private Context mContext;
 
-    private boolean pref_compact;
+	private boolean pref_compact;
 
-    public AppListAdapter(Context context) {
-        mContext = context;
-        SharedPreferences prefs = PreferenceManager
-                .getDefaultSharedPreferences(mContext);
-        pref_compact = prefs.getBoolean("compactlayout", false);
-    }
+	public AppListAdapter(Context context) {
+		mContext = context;
+		SharedPreferences prefs = PreferenceManager
+				.getDefaultSharedPreferences(mContext);
+		pref_compact = prefs.getBoolean("compactlayout", false);
+	}
 
-    public void addItem(DB.App app) {
-        items.add(app);
-    }
+	public void addItem(DB.App app) {
+		items.add(app);
+	}
 
-    public void clear() {
-        items.clear();
-    }
+	public void clear() {
+		items.clear();
+	}
 
-    @Override
-    public int getCount() {
-        return items.size();
-    }
+	@Override
+	public int getCount() {
+		return items.size();
+	}
 
-    @Override
-    public Object getItem(int position) {
-        return items.get(position);
-    }
+	@Override
+	public Object getItem(int position) {
+		return items.get(position);
+	}
 
-    @Override
-    public long getItemId(int position) {
-        return position;
-    }
+	@Override
+	public long getItemId(int position) {
+		return position;
+	}
 
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        View v = convertView;
-        if (v == null) {
-            LayoutInflater vi = (LayoutInflater) mContext
-                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            v = vi.inflate(R.layout.applistitem, null);
-        }
-        DB.App app = items.get(position);
+	@Override
+	public View getView(int position, View convertView, ViewGroup parent) {
+		View v = convertView;
+		if (v == null) {
+			LayoutInflater vi = (LayoutInflater) mContext
+					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+			v = vi.inflate(R.layout.applistitem, null);
+		}
+		DB.App app = items.get(position);
 
-        TextView name = (TextView) v.findViewById(R.id.name);
-        name.setText(app.name);
+		TextView name = (TextView) v.findViewById(R.id.name);
+		name.setText(app.name);
 
-        String vs;
-        if (app.hasUpdates)
-            vs = app.installedVersion + " -> " + app.updateVersion;
-        else if (app.installedVersion != null)
-            vs = app.installedVersion;
-        else {
-            int numav = app.apks.size();
-            if (numav == 1)
-                vs = mContext.getString(R.string.n_version_available);
-            else
-                vs = mContext.getString(R.string.n_versions_available);
-            vs = String.format(vs, numav);
-        }
+		String vs;
+		if (app.hasUpdates)
+			vs = app.installedVersion + " -> " + app.updateVersion;
+			else if (app.installedVersion != null)
+				vs = app.installedVersion;
+			else {
+				int numav = app.apks.size();
+				if (numav == 1)
+					vs = mContext.getString(R.string.n_version_available);
+				else
+					vs = mContext.getString(R.string.n_versions_available);
+				vs = String.format(vs, numav);
+			}
 
-        TextView summary = (TextView) v.findViewById(R.id.summary);
-        if (pref_compact)
-            summary.setVisibility(View.GONE);
-        else
-            summary.setText(app.summary);
+		TextView status = (TextView) v.findViewById(R.id.status);
+		status.setText(vs);
 
-        ImageView icon = (ImageView) v.findViewById(R.id.icon);
-        File icn = new File(DB.getIconsPath(), app.icon);
-        if (icn.exists() && icn.length() > 0) {
-            new Uri.Builder().build();
-            icon.setImageURI(Uri.parse(icn.getPath()));
-        } else {
-            icon.setImageResource(android.R.drawable.sym_def_app_icon);
-        }
+		TextView license = (TextView) v.findViewById(R.id.license);
+		license.setText(app.license);
 
-        // Disable it all if it isn't compatible...
-        View[] views = { v, summary, name };
-        for (View view : views) {
-            view.setEnabled(app.compatible);
-        }
+		TextView summary = (TextView) v.findViewById(R.id.summary);
+		if (pref_compact)
+			summary.setVisibility(View.GONE);
+		else
+			summary.setText(app.summary);
 
-        return v;
-    }
+		ImageView icon = (ImageView) v.findViewById(R.id.icon);
+		File icn = new File(DB.getIconsPath(), app.icon);
+		if (icn.exists() && icn.length() > 0) {
+			new Uri.Builder().build();
+			icon.setImageURI(Uri.parse(icn.getPath()));
+		} else {
+			icon.setImageResource(android.R.drawable.sym_def_app_icon);
+		}
+
+		// Disable it all if it isn't compatible...
+		View[] views = { v, status, summary, license, name };
+		for (View view : views) {
+			view.setEnabled(app.compatible);
+		}
+
+		return v;
+	}
 
 }

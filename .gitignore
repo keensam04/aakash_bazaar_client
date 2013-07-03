@@ -19,7 +19,11 @@ local.properties
 .classpath
 .project
 
-
+# text files
 *.txt
 
+# vim backup files
+*.swp
+
+# temporary codes
 tmp/
