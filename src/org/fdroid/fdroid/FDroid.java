@@ -285,7 +285,7 @@ public class FDroid extends FragmentActivity {
 				@Override
 				public void onClick(DialogInterface dialog,
 						int whichButton) {
-					Uri uri = Uri.parse("http://www.it.iitb.ac.in/aakash2/");
+					Uri uri = Uri.parse(getString(R.string.aakash2_home_page));
 					startActivity(new Intent(Intent.ACTION_VIEW, uri));
 				}
 			});
@@ -425,7 +425,8 @@ public class FDroid extends FragmentActivity {
 								int whichButton) {
 							String update_local_query = "update fdroid_repo set 'inuse'=0 where id=1;";
 							String update_main_query = "update fdroid_repo set 'inuse'=1 where id=2;";
-
+                            
+							// local repo will be reset every time the application restarts
 							DBHelper db = new DBHelper(FDroid.this);
 							SQLiteDatabase d = db.getWritableDatabase();
 							d.execSQL(update_local_query);

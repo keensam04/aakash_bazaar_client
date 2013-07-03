@@ -3,18 +3,19 @@
  * Copyright (C) 2009 Roberto Jacinto, roberto.jacinto@caixamagica.pt
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 3
- * of the License, or (at your option) any later version.
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation; either version 3 of the
+ * License, or (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
  * 
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+ * 02110-1301, USA.
  */
 
 package org.fdroid.fdroid;
@@ -394,7 +395,7 @@ public class DB {
 		db.execSQL(CREATE_TABLE_APK);
 		db.execSQL("create index apk_vercode on " + TABLE_APK + " (vercode);");
 		db.execSQL("create index apk_id on " + TABLE_APK + " (id);");
-		db.execSQL(CREATE_TABLE_SCREENSHOTS);
+		db.execSQL(CREATE_TABLE_SCREENSHOTS); // create a new table 'screenshots'
 		//db.execSQL("create index screenshots_vercode on " + SCREENSHOTS + " (vercode);");
 		//db.execSQL("create index screenshots_id on " + SCREENSHOTS + " (pkg_id);");
 	}
@@ -424,9 +425,6 @@ public class DB {
 
 			db.execSQL(CREATE_TABLE_REPO);
 			ContentValues values = new ContentValues();
-			System.out.println("We come to pong");
-			//Pong pong = new Pong();
-			//pong.ping();
 			values.put("address",
                     mContext.getString(R.string.default_repo_address));
             values.putNull("pubkey");

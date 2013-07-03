@@ -280,43 +280,41 @@ public class AppDetails extends ListActivity {
 		SQLiteDatabase db = d.getWritableDatabase();
 
 		ArrayList<String> image_array = new ArrayList<String>();
+		// query database table 'screenshots' for image names with package name 
 		String get_image_name = "select screenshot from screenshots where pkg_id='"+appid+"';";
-		//System.out.println(get_image_name);
-
+		// System.out.println(get_image_name);
 		Cursor cursor = db.rawQuery(get_image_name, null);
-		System.out.println("OUTSIDE IF STATEMENT");
+		// System.out.println("OUTSIDE IF STATEMENT");
 		if (cursor.moveToFirst()) {
-			System.out.println("INSIDE IF STATEMENT");
+			// System.out.println("GOT SOMETHING IN TABLE: screenshots");
 			do {
 				image_array.add(cursor.getString(0));
-				System.out.println("CURSOR_POSITION : "+cursor.getPosition());
-			} while (cursor.moveToNext());				
-
+				// System.out.println("CURSOR_POSITION : "+cursor.getPosition());
+			} while (cursor.moveToNext());	
 		}
-		db.close();
+		db.close();	// safely close the database
 
-		System.out.println("SCREENSHOT_LIST is: "+image_array.size());
+		// System.out.println("SCREENSHOT_LIST is: "+image_array.size());
 		return image_array;
-
 	}
 
 
 	public void fetch_screenshot_from_sdCard_and_display(String appid1, ArrayList<String> image_array) {
-		// fetch screenshots from /sdcard and display
+		// fetch screenshots from '/mnt/sdcard' and display
 		screenshot_parent = (LinearLayout) infoView.findViewById(R.id.parentLinear);
 		Load_screenshot_parent.setVisibility(View.GONE);
-		System.out.println("AFTER PROGRESSBAR");
+		// System.out.println("AFTER PROGRESSBAR");
 		File image_path = new File(Environment.getExternalStorageDirectory()+"/fdroid/"+appid);
 		if (image_path.exists() && image_path.getUsableSpace() != 0) {
 			//Toast.makeText(AppDetails.this, "fetching new images", Toast.LENGTH_SHORT).show();
 			for (int i = 0; i < image_array.size(); i++) {
-				//Toast.makeText(this, "image found"+image_array.get(i).toString(), Toast.LENGTH_SHORT).show();
-				System.out.println("image name"+image_array.get(i).toString());
-				//add screenshots to layout
+				// Toast.makeText(this, "image found"+image_array.get(i).toString(), Toast.LENGTH_SHORT).show();
+				// System.out.println("image name"+image_array.get(i).toString());
 
+				//add screenshots to layout
 				ImageView screenshot = new ImageView(AppDetails.this);
 				Bitmap bm = BitmapFactory.decodeFile(image_path+"/"+image_array.get(i).toString());
-				//screenshot.setBackgroundResource(Drawable.createFromPath(image_path+"/"+image_array.get(i).toString()));
+				// screenshot.setBackgroundResource(Drawable.createFromPath(image_path+"/"+image_array.get(i).toString()));
 				screenshot.setImageBitmap(bm);
 				screenshot_parent.addView(screenshot,250,200);
 
@@ -347,12 +345,15 @@ public class AppDetails extends ListActivity {
 	}
 
 	public void create_pkg_dir() {
-		System.out.println("APP ID IS"+appid);
+        /*
+         * create <package_name> dirrectory under /mnt/sdcard/fdroid
+         */
+		// System.out.println("APP ID IS"+appid);
 		File fdroid = new File(Environment.getExternalStorageDirectory() + "/fdroid");
 		if (!fdroid.exists()) {
-			System.out.println("fdroid dir NOT exists!");
+		    // System.out.println("fdroid dir NOT exists!");
 			fdroid.mkdir();	
-			System.out.println("folder CREATED");
+			// System.out.println("folder CREATED");
 			File package_dir = new File(Environment.getExternalStorageDirectory() + "/fdroid/" + appid);
 			if (!package_dir.exists()){
 				package_dir.mkdir();
@@ -369,10 +370,12 @@ public class AppDetails extends ListActivity {
 	}
 
 	public class ParseUrl extends AsyncTask<String, String, String>{
+		/*
+		 * get page from URL:/screenshots/<package_name>
+		 */
 		String result;
 		String PKG_NAME;
-
-
+		
 		@Override
 		protected String doInBackground(String... params) {
 
@@ -384,18 +387,15 @@ public class AppDetails extends ListActivity {
 				HttpGet httpGet = new HttpGet(repoAddress+"/screenshots/"+PKG_NAME+"/");
 				HttpResponse response = httpClient.execute(httpGet, localContext);
 
-
 				BufferedReader reader = new BufferedReader(
 						new InputStreamReader(
 								response.getEntity().getContent()
 								)
 						);
 
-
 				String line = null;
 				while ((line = reader.readLine()) != null){
 					result += line + "\n";
-
 				}
 
 			} catch (Exception e) {
@@ -406,19 +406,16 @@ public class AppDetails extends ListActivity {
 
 		@Override
 		protected void onPostExecute(String unused) {
-			// TODO Auto-generated method stub
-			System.out.println("RESULT = "+result);
-			// Toast.makeText(ParseUrl.this, "SACHIN"+result, Toast.LENGTH_SHORT).show();
-
+			// System.out.println("RESULT = "+result);
+			
 			// parse html page and extract image file name into an array called 'screenshots'
 			String[] screenshots = StringUtils.substringsBetween(result, "alt=\"[IMG]\"></td><td><a href=\"", "\">");
 			if (screenshots != null) {
-
 			    String URL_REPO = repoAddress;
 			    
-			    //start downloading images in /sdcard/fdroid/PKG_NAME
+			    // start downloading images in //mnt/sdcard/fdroid/PKG_NAME
 			    for (int i = 0; i < screenshots.length; i++) {
-				//System.out.println(URL_IIT+PKG_NAME+"/"+screenshots[i]);
+				// System.out.println(screenshots[i]);
 				new DownloadFileAsync().
 				    execute(URL_REPO+"/screenshots/"+PKG_NAME+"/"+screenshots[i],screenshots[i],PKG_NAME);
 			    }
@@ -515,14 +512,11 @@ public class AppDetails extends ListActivity {
 				values.put("screenshot", IMAGE_NAME);
 				db.insert("screenshots", null, values);
 			}
-			db.close();
-
-
+			db.close(); // safely close database
 
 			// display image in layout instead of progress bar
 			Load_screenshot_parent.setVisibility(View.GONE);
-			System.out.println("AFTER PROGRESSBAR");
-
+			// System.out.println("AFTER PROGRESSBAR");
 
 			File image_path = new File(Environment.getExternalStorageDirectory()+"/fdroid/"+appid+"/"+IMAGE_NAME);
 			if (image_path.exists() && image_path.getUsableSpace() != 0) {

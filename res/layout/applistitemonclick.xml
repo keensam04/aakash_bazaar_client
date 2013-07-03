@@ -27,26 +27,7 @@
         android:textSize="18sp"
         android:textStyle="bold" />
 
-    <!--
-            <TextView
-        android:id="@+id/license"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_below="@id/name"
-        android:ellipsize="end"
-        android:singleLine="true"
-        android:textSize="12sp" />
-
-    <TextView
-        android:id="@+id/status"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/icon"
-        android:ellipsize="end"
-        android:paddingLeft="4dp"
-        android:singleLine="true" />
-    -->
+  
 
     <TextView
         android:id="@+id/moreinfo"
