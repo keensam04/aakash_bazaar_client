@@ -18,6 +18,7 @@
 
 package org.fdroid.fdroid;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,6 +26,7 @@ import android.app.ListActivity;
 import android.app.SearchManager;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -127,14 +129,15 @@ public class SearchResults extends ListActivity {
     protected void onListItemClick(ListView l, View v, int position, long id) {
         final DB.App app;
         app = (DB.App) applist.getItem(position);
-
         Intent intent = new Intent(this, AppDetails.class);
         intent.putExtra("appid", app.id);
         startActivityForResult(intent, REQUEST_APPDETAILS);
         super.onListItemClick(l, v, position, id);
     }
 
-    @Override
+    
+
+	@Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
         super.onCreateOptionsMenu(menu);

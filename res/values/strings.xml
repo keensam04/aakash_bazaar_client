@@ -26,7 +26,7 @@
     <string name="automatic_repo_scan">Automatic repo scan</string>
     <string name="app_name">Aakash Bazaar</string>
     <string name="about_title">About Aakash bazaar</string>
-    <string name="about_desc">Maintained by IIT Bombay. Based on F-Droid, which is originally based on Aptoide.\n\nReleased under the GNU GPLv3 license.</string>
+    <string name="about_desc">An appstore for Aakash applications. Based on F-Droid.\nMaintained by IIT Bombay.\nReleased under GNU/GPL v3 license.</string>
     <string name="about_site"></string>
     <string name="about_sitec"></string>
     <string name="about_mail">Email: </string>
@@ -120,6 +120,7 @@
     <string name="category_all">All</string>
     <string name="category_whatsnew">What\'s New</string>
     <string name="category_recentlyupdated">Recently Updated</string>
+    <string name="upload_apk_page">http://10.129.50.7:8000/aakash_bazaar/default</string>
 
     <!--
     status_download takes four parameters:
@@ -135,9 +136,10 @@
     <string name="menu_upload_apk">Upload your own APK</string>
     <string name="upload_apk_title">Upload your APK</string>
     <string name="rate_the_app">Rate this app: </string>
-    <string name="could_not_ping">The default repository address is currenlty inaccessible. Do you want to connect to the main repository?</string>
+    <string name="could_not_ping">The default repository address is currently not accessible. Do you want to connect to the main repository?</string>
     <string name="ping_title">Error connecting to Local Repo</string>
     <string name="ping_ok">OK</string>
     <string name="ping_no">No, thanks!</string>
+    <string name="aakash2_home_page">http://www.it.iitb.ac.in/aakash2/</string>
 
 </resources>
