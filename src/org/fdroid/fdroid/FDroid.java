@@ -285,7 +285,7 @@ public class FDroid extends FragmentActivity {
 				@Override
 				public void onClick(DialogInterface dialog,
 						int whichButton) {
-					Uri uri = Uri.parse(getString(R.string.aakash2_home_page));
+					Uri uri = Uri.parse(getString(R.string.aakash_bazaar_home));
 					startActivity(new Intent(Intent.ACTION_VIEW, uri));
 				}
 			});
