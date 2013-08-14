@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.fdroid.fdroid"
     android:installLocation="auto"
-    android:versionCode="9"
-    android:versionName="0.9 beta" >
+    android:versionCode="1"
+    android:versionName="beta2" >
 
     <uses-sdk
         android:minSdkVersion="14"
@@ -24,12 +24,13 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:name="FDroidApp"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@android:style/Theme.Holo.Light.DarkActionBar" >
+        android:theme="@android:style/Theme.Holo.Light.DarkActionBar" android:description="@id/description">
         <activity
             android:name="FDroid"
             android:configChanges="keyboardHidden|orientation|screenSize" >
@@ -47,7 +48,8 @@
         <activity android:name="Settings" />
         <activity
             android:name="AppDetails"
-            android:exported="true" >
+            android:exported="true"
+            android:screenOrientation="landscape" >
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
 

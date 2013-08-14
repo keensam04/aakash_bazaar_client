@@ -1,20 +1,21 @@
 /*
- * Copyright (C) 2010-13  Ciaran Gultnieks, ciaran@ciarang.com
- * Copyright (C) 2009  Roberto Jacinto, roberto.jacinto@caixamagica.pt
+ * Copyright (C) 2010-13 Ciaran Gultnieks, ciaran@ciarang.com
+ * Copyright (C) 2009 Roberto Jacinto, roberto.jacinto@caixamagica.pt
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 3
- * of the License, or (at your option) any later version.
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation; either version 3 of the
+ * License, or (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
  * 
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+ * 02110-1301, USA.
  */
 
 package org.fdroid.fdroid;
@@ -244,6 +245,7 @@ public class DB {
 			+ "minSdkVersion integer," + "permissions string,"
 			+ "features string," + "hashType string," + "added string,"
 			+ "compatible int not null," + "primary key(id,vercode));";
+	
 
 	public static class Apk {
 
@@ -367,6 +369,13 @@ public class DB {
 			+ TABLE_REPO + " (id integer primary key, address text not null, "
 			+ "inuse integer not null, " + "priority integer not null,"
 			+ "pubkey text, lastetag text);";
+	
+	
+	// custom table for screenShots
+			private static final String TABLE_SCREENSHOTS = "screenshots";
+			private static final String CREATE_TABLE_SCREENSHOTS = "create table " 
+			+ TABLE_SCREENSHOTS + " (id integer primary key, pkg_id text not null, screenshot text not null," 
+			+ " FOREIGN KEY(pkg_id) REFERENCES fdroid_apk(id));";
 
 	public static class Repo {
 		public int id;
@@ -386,6 +395,9 @@ public class DB {
 		db.execSQL(CREATE_TABLE_APK);
 		db.execSQL("create index apk_vercode on " + TABLE_APK + " (vercode);");
 		db.execSQL("create index apk_id on " + TABLE_APK + " (id);");
+		db.execSQL(CREATE_TABLE_SCREENSHOTS); // create a new table 'screenshots'
+		//db.execSQL("create index screenshots_vercode on " + SCREENSHOTS + " (vercode);");
+		//db.execSQL("create index screenshots_id on " + SCREENSHOTS + " (pkg_id);");
 	}
 
 	public static void resetTransient(SQLiteDatabase db) {
@@ -413,9 +425,6 @@ public class DB {
 
 			db.execSQL(CREATE_TABLE_REPO);
 			ContentValues values = new ContentValues();
-			System.out.println("We come to pong");
-			//Pong pong = new Pong();
-			//pong.ping();
 			values.put("address",
                     mContext.getString(R.string.default_repo_address));
             values.putNull("pubkey");
@@ -433,6 +442,9 @@ public class DB {
             values.put("priority", 20);
             values.putNull("lastetag");
             db.insert(TABLE_REPO, null, values);
+            
+            
+           
 		}
 
 		@Override

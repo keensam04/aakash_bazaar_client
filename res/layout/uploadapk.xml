@@ -3,13 +3,17 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:background="@android:color/transparent"
-    android:orientation="vertical"
-    android:paddingLeft="50dp" >
+    android:orientation="vertical" >
 
     <WebView
         android:id="@+id/wvUploadApk"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:background="@android:color/transparent" />
+    
+    <EditText 
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
 
 </LinearLayout>

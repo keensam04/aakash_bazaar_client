@@ -23,6 +23,41 @@
         android:layout_height="wrap_content"
         android:textSize="12sp" />
 
+    
+   <HorizontalScrollView android:layout_width="match_parent"
+       android:layout_height="wrap_content">
+       
+       <LinearLayout 
+           android:id="@+id/parentLinear"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:orientation="horizontal"
+           android:layout_gravity="center">
+
+           <LinearLayout 
+               android:id="@+id/load_screenshot_parent"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:orientation="horizontal">
+
+	           <ProgressBar
+	               android:id="@+id/progressBar_screenshot"
+	               style="?android:attr/progressBarStyleLarge"
+	     	       android:layout_width="0dp"
+	               android:layout_height="wrap_content"
+	               android:layout_weight="1"
+	               android:layout_gravity="center|center_horizontal" />
+	           
+	           <TextView 
+                    android:layout_width="wrap_content"
+               		android:layout_height="wrap_content"
+               		android:text="Loading screenshots, Please wait"
+               		android:layout_gravity="center|center_horizontal"/>
+           
+           </LinearLayout>
+       </LinearLayout>
+       
+   </HorizontalScrollView>
     <TextView
         android:id="@+id/description"
         android:layout_width="fill_parent"

@@ -1,7 +1,11 @@
 package org.fdroid.fdroid.views.fragments;
 
+import java.io.File;
+
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,11 +14,13 @@ import android.widget.ListView;
 import org.fdroid.fdroid.*;
 import org.fdroid.fdroid.views.AppListView;
 
-abstract class AppListFragment extends Fragment implements AdapterView.OnItemClickListener {
+public class AppListFragment extends Fragment implements AdapterView.OnItemClickListener {
 
     private FDroid parent;
-
-    protected abstract AppListAdapter getAppListAdapter();
+    
+    protected AppListAdapter getAppListAdapter() {
+		return null;
+	}
 
     @Override
 	public void onAttach(Activity activity) {
@@ -59,7 +65,10 @@ abstract class AppListFragment extends Fragment implements AdapterView.OnItemCli
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         final DB.App app = (DB.App)getAppListAdapter().getItem(position);
         Intent intent = new Intent(getActivity(), AppDetails.class);
-        intent.putExtra("appid", app.id);
-        startActivityForResult(intent, FDroid.REQUEST_APPDETAILS);
+		intent.putExtra("appid",app.id);
+		startActivity(intent);
     }
+    
+    
+		
 }
