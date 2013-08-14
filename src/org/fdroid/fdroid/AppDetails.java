@@ -720,9 +720,9 @@ public class AppDetails extends ListActivity {
 		final Button installOrLaunch = (Button) findViewById(R.id.bAppDetailInstall);
 		Button uninstall = (Button) findViewById(R.id.bAppDetailUninstall);
 		if (app.installedVersion == null)
-			installOrLaunch.setText(" Install ");
+			installOrLaunch.setText("Install");
 		else {
-			installOrLaunch.setText(" Launch  ");
+			installOrLaunch.setText("Launch");
 			uninstall.setVisibility(View.VISIBLE);
 		}
 
@@ -921,7 +921,7 @@ public class AppDetails extends ListActivity {
 
 	// Install the version of this app denoted by 'curapk'.
 	private void install() {
-
+		System.out.println("in install");
 		String ra = null;
 		try {
 			DB db = DB.getDB();
@@ -1004,6 +1004,7 @@ public class AppDetails extends ListActivity {
 	}
 
 	private void launchApk(String id) {
+		System.out.println("in launchApk");
 		Intent intent = mPm.getLaunchIntentForPackage(id);
 		startActivity(intent);
 	}
