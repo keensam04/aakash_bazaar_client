@@ -1,22 +1,77 @@
 #!/bin/bash
 # startup script for aakash bazaar
 
-# this will update a repo for `ant` to build an apk
-# android update project --path . --target android-15 --subprojects
+# first arg(optional)
+# rm, for deleting bin/ and gen/
+# update, to update project
 
-# uncomment below 2 line to remove bin/ and gen/
-# rm -rvf bin/
-# rm -rvf gen/
+# vars
+PKG_NAME="org.fdroid.fdroid"
+APK_NAME="FDroid-debug.apk"
+
+# remove /bin and gen/ if first argument passed is 'rm'
+function rmbingen() {
+    if [ "$1" == "rm" ];
+    then 
+        # uncomment below 2 line to remove bin/ and gen/
+	if [ -d "bin/" ] || [ -d "gen/" ];
+	then
+	    rm -rvf bin/
+	    rm -rvf gen/
+	else
+	    echo "No bin/ or gen/ found!"
+	fi
+    else
+	echo "leaving bin/ and gen/ as it is"
+    fi    
+}
+# execute function rmbingen
+rmbingen $1
+
+# remote old bin/ and gen/ and update the project
+function update_project() {
+    if [ "$1" == "update" ];
+    then
+	echo "creating ant project.."
+	rmbingen rm
+        # this will update a repo for `ant` to build an apk
+	android update project --path . --target android-17 --subprojects
+	# at last, build apk
+	build_apk
+    else
+	echo "not updating the project"
+    fi
+}
+# execute function update_project
+update_project $1
 
 # uninstall apk
-adb uninstall org.fdroid.fdroid
+adb uninstall ${PKG_NAME}
 
-# build apk in debug mode
-ant debug
+function build_apk() {
+    # build apk in debug mode
+    echo "Building APK.."
+    # if 'build.xml' does not exist, create it.
+    if [ -f "build.xml" ];
+    then
+	ant debug
+    else
+	update_project update
+    fi
+}
+# execute function build_apk
+build_apk
 
-# install apk
-adb install bin/FDroid-debug.apk
+if [ -f bin/${APK_NAME} ];
+then
+    # install apk
+    echo "Installing APK.."
+    adb install bin/${APK_NAME}
 
-# start Main activity
-adb shell am start -a android.intent.action.MAIN -n org.fdroid.fdroid/.FDroid
+    # Start Main activity
+    adb shell am start -a android.intent.action.MAIN -n ${PKG_NAME}/.FDroid
+else
+    echo "APK not found!!"
+    exit 1
+fi
 
